@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import IUniswapV2PairABI from '@sushiswap/core/abi/IUniswapV2Pair.json'
+import IUniswapV2PairABI from '@paydefi/core/abi/IUniswapV2Pair.json'
 import { useContract } from './useContract'
 import { isAddress } from '../functions'
 import { BigNumber } from '@ethersproject/bignumber'

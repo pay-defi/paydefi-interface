@@ -1,3 +1,3 @@
-import { ChainId } from '@sushiswap/sdk'
+import { ChainId } from '@paydefi/sdk'
 
 export const MigrationSupported = [ChainId.MAINNET, ChainId.BSC, ChainId.MATIC]

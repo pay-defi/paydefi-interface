@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount } from '@sushiswap/sdk'
+import { Currency, CurrencyAmount } from '@paydefi/sdk'
 
 import { useActiveWeb3React } from '../hooks/useActiveWeb3React'
 import { useCallback } from 'react'

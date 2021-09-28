@@ -1,4 +1,4 @@
-import { ChainId, Ether, SUSHI_ADDRESS, Token, WETH9, WNATIVE } from '@sushiswap/sdk'
+import { ChainId, Ether, SUSHI_ADDRESS, Token, WETH9, WNATIVE } from '@paydefi/sdk'
 
 import { SupportedChainId } from '../chains'
 

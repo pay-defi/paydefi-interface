@@ -5,7 +5,7 @@ import Main from '../../components/Main'
 import Popups from '../../components/Popups'
 
 import { useActiveWeb3React } from '../../hooks'
-// import { ChainId } from '@sushiswap/sdk'
+// import { ChainId } from '@paydefi/sdk'
 
 const Layout = ({ children }) => {
   // const { chainId } = useActiveWeb3React()
