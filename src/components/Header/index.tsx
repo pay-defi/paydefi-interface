@@ -1,8 +1,9 @@
-import { ChainId, Currency, NATIVE, SUSHI_ADDRESS } from '@paydefi/sdk'
+import { ChainId, Currency, NATIVE, SUSHI_ADDRESS } from '@sushiswap/sdk'
+import { Feature, featureEnabled } from '../../functions/feature'
 import React, { useEffect, useState } from 'react'
 
 import { ANALYTICS_URL } from '../../constants'
-import Buy from '../../features/ramp'
+import Buy from '../../features/on-ramp/ramp'
 import ExternalLink from '../ExternalLink'
 import Image from 'next/image'
 import LanguageSwitch from '../LanguageSwitch'
@@ -56,7 +57,7 @@ function AppBar(): JSX.Element {
                           {i18n._(t`Pool`)}
                         </a>
                       </NavLink>
-                      {chainId && [ChainId.MAINNET, ChainId.MATIC, ChainId.BSC].includes(chainId) && (
+                      {chainId && featureEnabled(Feature.MIGRATE, chainId) && (
                         <NavLink href={'/migrate'}>
                           <a
                             id={`migrate-nav-link`}
@@ -66,49 +67,37 @@ function AppBar(): JSX.Element {
                           </a>
                         </NavLink>
                       )}
-                      {chainId &&
-                        [ChainId.MAINNET, ChainId.MATIC, ChainId.XDAI, ChainId.HARMONY, ChainId.ARBITRUM].includes(
-                          chainId
-                        ) && (
-                          <NavLink href={'/farm'}>
+                      {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (
+                        <NavLink href={'/farm'}>
+                          <a
+                            id={`farm-nav-link`}
+                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                          >
+                            {i18n._(t`Farm`)}
+                          </a>
+                        </NavLink>
+                      )}
+                      {chainId && featureEnabled(Feature.KASHI, chainId) && (
+                        <>
+                          <NavLink href={'/lend'}>
                             <a
-                              id={`farm-nav-link`}
+                              id={`lend-nav-link`}
                               className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                             >
-                              {i18n._(t`Farm`)}
+                              {i18n._(t`Lend`)}
                             </a>
                           </NavLink>
-                        )}
-                      {chainId &&
-                        [
-                          ChainId.MAINNET,
-                          ChainId.KOVAN,
-                          ChainId.BSC,
-                          ChainId.MATIC,
-                          ChainId.XDAI,
-                          ChainId.ARBITRUM,
-                          ChainId.AVALANCHE,
-                        ].includes(chainId) && (
-                          <>
-                            <NavLink href={'/lend'}>
-                              <a
-                                id={`lend-nav-link`}
-                                className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                              >
-                                {i18n._(t`Lend`)}
-                              </a>
-                            </NavLink>
-                            <NavLink href={'/borrow'}>
-                              <a
-                                id={`borrow-nav-link`}
-                                className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                              >
-                                {i18n._(t`Borrow`)}
-                              </a>
-                            </NavLink>
-                          </>
-                        )}
-                      {chainId === ChainId.MAINNET && (
+                          <NavLink href={'/borrow'}>
+                            <a
+                              id={`borrow-nav-link`}
+                              className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                            >
+                              {i18n._(t`Borrow`)}
+                            </a>
+                          </NavLink>
+                        </>
+                      )}
+                      {chainId && featureEnabled(Feature.STAKING, chainId) && (
                         <NavLink href={'/stake'}>
                           <a
                             id={`stake-nav-link`}
@@ -117,16 +106,6 @@ function AppBar(): JSX.Element {
                             {i18n._(t`Stake`)}
                           </a>
                         </NavLink>
-                      )}
-                      {chainId === ChainId.MAINNET && (
-                        <Link href={'/miso'}>
-                          <a
-                            id={`miso-nav-link`}
-                            className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                          >
-                            {i18n._(t`Miso`)}
-                          </a>
-                        </Link>
                       )}
                     </div>
                   </div>
@@ -148,7 +127,7 @@ function AppBar(): JSX.Element {
                                     symbol: 'XSUSHI',
                                     decimals: 18,
                                     image:
-                                      'https://raw.githubusercontent.com/sushiswap/logos/main/network/ethereum/0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272.jpg',
+                                      'https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272/logo.png',
                                   },
                                 }
                                 library.provider
@@ -193,7 +172,7 @@ function AppBar(): JSX.Element {
                                   symbol: 'SUSHI',
                                   decimals: 18,
                                   image:
-                                    'https://raw.githubusercontent.com/sushiswap/logos/main/network/ethereum/0x6B3595068778DD592e39A122f4f5a5cF09C90fE2.jpg',
+                                    'https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/ethereum/assets/0x6B3595068778DD592e39A122f4f5a5cF09C90fE2/logo.png',
                                 },
                               }
                               if (library && library.provider.isMetaMask && library.provider.request) {
@@ -250,9 +229,6 @@ function AppBar(): JSX.Element {
                 </div>
                 <div className="flex -mr-2 sm:hidden">
                   {/* Mobile menu button */}
-                  <div className="block mr-2 md:hidden">
-                    <LanguageSwitch />
-                  </div>
                   <Popover.Button className="inline-flex items-center justify-center p-2 rounded-md text-primary hover:text-high-emphesis focus:outline-none">
                     <span className="sr-only">{i18n._(t`Open main menu`)}</span>
                     {open ? (
@@ -317,51 +293,41 @@ function AppBar(): JSX.Element {
                   </a>
                 </Link>
 
-                {chainId &&
-                  [ChainId.MAINNET, ChainId.MATIC, ChainId.HARMONY, ChainId.XDAI, ChainId.ARBITRUM].includes(
-                    chainId
-                  ) && (
-                    <Link href={'/farm'}>
+                {chainId && featureEnabled(Feature.LIQUIDITY_MINING, chainId) && (
+                  <Link href={'/farm'}>
+                    <a
+                      id={`farm-nav-link`}
+                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                    >
+                      {' '}
+                      {i18n._(t`Farm`)}
+                    </a>
+                  </Link>
+                )}
+
+                {chainId && featureEnabled(Feature.KASHI, chainId) && (
+                  <>
+                    <Link href={'/lend'}>
                       <a
-                        id={`farm-nav-link`}
+                        id={`lend-nav-link`}
                         className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
                       >
-                        {' '}
-                        {i18n._(t`Farm`)}
+                        {i18n._(t`Lend`)}
                       </a>
                     </Link>
-                  )}
 
-                {chainId &&
-                  [
-                    ChainId.MAINNET,
-                    ChainId.KOVAN,
-                    ChainId.BSC,
-                    ChainId.MATIC,
-                    ChainId.ARBITRUM,
-                    ChainId.AVALANCHE,
-                  ].includes(chainId) && (
-                    <>
-                      <Link href={'/lend'}>
-                        <a
-                          id={`lend-nav-link`}
-                          className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                        >
-                          {i18n._(t`Lend`)}
-                        </a>
-                      </Link>
+                    <Link href={'/borrow'}>
+                      <a
+                        id={`borrow-nav-link`}
+                        className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                      >
+                        {i18n._(t`Borrow`)}
+                      </a>
+                    </Link>
+                  </>
+                )}
 
-                      <Link href={'/borrow'}>
-                        <a
-                          id={`borrow-nav-link`}
-                          className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                        >
-                          {i18n._(t`Borrow`)}
-                        </a>
-                      </Link>
-                    </>
-                  )}
-                {chainId === ChainId.MAINNET && (
+                {chainId && featureEnabled(Feature.STAKING, chainId) && (
                   <Link href={'/stake'}>
                     <a
                       id={`stake-nav-link`}
@@ -371,26 +337,15 @@ function AppBar(): JSX.Element {
                     </a>
                   </Link>
                 )}
-                {chainId &&
-                  [ChainId.MAINNET, ChainId.BSC, ChainId.XDAI, ChainId.FANTOM, ChainId.MATIC].includes(chainId) && (
-                    <ExternalLink
-                      id={`analytics-nav-link`}
-                      href={ANALYTICS_URL[chainId] || 'https://analytics.sushi.com'}
-                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                    >
-                      {i18n._(t`Analytics`)}
-                    </ExternalLink>
-                  )}
 
-                {chainId === ChainId.MAINNET && (
-                  <Link href={'/miso'}>
-                    <a
-                      id={`stake-nav-link`}
-                      className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
-                    >
-                      {i18n._(t`Miso`)}
-                    </a>
-                  </Link>
+                {chainId && featureEnabled(Feature.ANALYTICS, chainId) && (
+                  <ExternalLink
+                    id={`analytics-nav-link`}
+                    href={ANALYTICS_URL[chainId] || 'https://analytics.sushi.com'}
+                    className="p-2 text-baseline text-primary hover:text-high-emphesis focus:text-high-emphesis md:p-3 whitespace-nowrap"
+                  >
+                    {i18n._(t`Analytics`)}
+                  </ExternalLink>
                 )}
               </div>
             </Popover.Panel>

@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Token } from '@paydefi/sdk'
+import { Currency, CurrencyAmount, Token } from '@sushiswap/sdk'
 import React, { CSSProperties, MutableRefObject, useCallback, useMemo } from 'react'
 import { RowBetween, RowFixed } from '../../components/Row'
 
@@ -101,13 +101,11 @@ function CurrencyRow({
   isSelected,
   otherSelected,
   style,
-  hideBalance = false,
 }: {
   currency: Currency
   onSelect: () => void
   isSelected: boolean
   otherSelected: boolean
-  hideBalance: boolean
   style: CSSProperties
 }) {
   const { account, chainId } = useActiveWeb3React()
@@ -116,6 +114,7 @@ function CurrencyRow({
   const isOnSelectedList = isTokenOnList(selectedTokenList, currency.isToken ? currency : undefined)
   const customAdded = useIsUserAddedToken(currency)
   const balance = useCurrencyBalance(account ?? undefined, currency)
+
   // only show add or remove buttons if not on selected list
   return (
     <MenuItem
@@ -138,11 +137,9 @@ function CurrencyRow({
         </div>
       </Column>
       <TokenTags currency={currency} />
-      {!hideBalance && (
-        <div className="flex items-center justify-end">
-          {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
-        </div>
-      )}
+      <div className="flex items-center justify-end">
+        {balance ? <Balance balance={balance} /> : account ? <Loader /> : null}
+      </div>
     </MenuItem>
   )
 }
@@ -183,7 +180,6 @@ export default function CurrencyList({
   fixedListRef,
   showImportView,
   setImportToken,
-  hideBalance = false,
 }: {
   height: number
   currencies: Currency[]
@@ -194,7 +190,6 @@ export default function CurrencyList({
   fixedListRef?: MutableRefObject<FixedSizeList | undefined>
   showImportView: () => void
   setImportToken: (token: Token) => void
-  hideBalance: boolean
 }) {
   const itemData: (Currency | BreakLine)[] = useMemo(() => {
     if (otherListTokens && otherListTokens?.length > 0) {
@@ -233,14 +228,13 @@ export default function CurrencyList({
             isSelected={isSelected}
             onSelect={handleSelect}
             otherSelected={otherSelected}
-            hideBalance={hideBalance}
           />
         )
       } else {
         return null
       }
     },
-    [currencies.length, hideBalance, onCurrencySelect, otherCurrency, selectedCurrency, setImportToken, showImportView]
+    [currencies.length, onCurrencySelect, otherCurrency, selectedCurrency, setImportToken, showImportView]
   )
 
   const itemKey = useCallback((index: number, data: typeof itemData) => {

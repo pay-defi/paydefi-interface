@@ -1,11 +1,10 @@
-import { KASHI_ADDRESS, Token, USDC, USDC_ADDRESS, WNATIVE } from '@paydefi/sdk'
+import { KASHI_ADDRESS, USDC_ADDRESS, WNATIVE_ADDRESS } from '@sushiswap/sdk'
 import { useBentoBoxContract, useBoringHelperContract, useContract } from '../../hooks/useContract'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BigNumber } from '@ethersproject/bignumber'
 import ERC20_ABI from '../../constants/abis/erc20.json'
 import { WrappedTokenInfo } from '../lists/wrappedTokenInfo'
-import { Zero } from '@ethersproject/constants'
 import { e10 } from '../../functions/math'
 import { easyAmount } from '../../functions/kashi'
 import { getAddress } from '@ethersproject/address'
@@ -33,7 +32,7 @@ export function useBentoBalances(): BentoBalance[] {
 
   const tokens = useAllTokens()
 
-  const weth = WNATIVE[chainId].address
+  const weth = WNATIVE_ADDRESS[chainId]
 
   const tokenAddresses = Object.keys(tokens)
 

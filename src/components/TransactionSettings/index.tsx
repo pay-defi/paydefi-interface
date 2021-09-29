@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useSetUserSlippageTolerance, useUserSlippageTolerance, useUserTransactionTTL } from '../../state/user/hooks'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants'
-import { Percent } from '@paydefi/sdk'
+import { Percent } from '@sushiswap/sdk'
 import QuestionHelper from '../QuestionHelper'
 import Typography from '../Typography'
 import { classNames } from '../../functions'
@@ -96,7 +96,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
 
           <QuestionHelper
             text={i18n._(
-              t`Your transaction will revert if the price changes unfavorably by more than this percentage.`
+              t`Your transaction will revert 23if the price changes unfavorably by more than this percentage.`
             )}
           />
         </div>
@@ -114,7 +114,7 @@ export default function TransactionSettings({ placeholderSlippage }: Transaction
             )}
             tabIndex={-1}
           >
-            <div className="flex justify-between items-center gap-1">
+            <div className="flex items-center justify-between gap-1">
               {tooLow || tooHigh ? (
                 <span className="hidden sm:inline text-yellow" role="img" aria-label="warning">
                   ⚠️

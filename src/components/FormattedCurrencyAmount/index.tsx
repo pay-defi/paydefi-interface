@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Fraction, JSBI } from '@paydefi/sdk'
+import { Currency, CurrencyAmount, Fraction, JSBI } from '@sushiswap/sdk'
 
 import React from 'react'
 

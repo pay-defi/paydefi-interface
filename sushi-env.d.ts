@@ -37,7 +37,7 @@ declare module 'jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
 
-declare module 'react-tradingview-widget'
+declare module 'formatic'
 
 declare module '@ethersproject/bignumber' {
   interface BigNumber {

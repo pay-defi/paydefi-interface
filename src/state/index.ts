@@ -1,4 +1,4 @@
-import { Action, ThunkAction, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit'
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist'
 
 import reducer from './reducer'
@@ -10,11 +10,11 @@ let store
 
 const PERSISTED_KEYS: string[] = ['user', 'transactions', 'lists']
 
-const persistConfig: any = {
+const persistConfig = {
   key: 'root',
   whitelist: PERSISTED_KEYS,
   storage,
-  stateReconciler: false,
+  // stateReconciler: false,
 }
 
 const persistedReducer = persistReducer(persistConfig, reducer)

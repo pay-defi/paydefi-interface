@@ -1,18 +1,18 @@
-import { CHAINLINK_ORACLE_ADDRESS, Currency, KASHI_ADDRESS } from '@paydefi/sdk'
+import { CHAINLINK_ORACLE_ADDRESS, Currency, KASHI_ADDRESS } from '@sushiswap/sdk'
 import React, { useCallback } from 'react'
 import { useCreateActionHandlers, useCreateState, useDerivedCreateInfo } from '../../../state/create/hook'
 
+import { AddressZero } from '@ethersproject/constants'
 import Button from '../../../components/Button'
-import { CHAINLINK_MAPPING } from '../../../constants/chainlink'
+import { CHAINLINK_PRICE_FEED_MAP } from '../../../config/oracles/chainlink'
 import Card from '../../../components/Card'
-import CardHeader from '../../../components/CardHeader'
 import Container from '../../../components/Container'
 import CurrencyInputPanel from '../../../components/CurrencyInputPanel'
 import { Field } from '../../../state/create/actions'
 import Head from 'next/head'
 import Layout from '../../../layouts/Kashi'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { e10 } from '../../../functions/math'
-import { ethers } from 'ethers'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../../hooks/useActiveWeb3React'
 import { useBentoBoxContract } from '../../../hooks/useContract'
@@ -62,14 +62,14 @@ function Create() {
     async (asset: Currency, collateral: Currency) => {
       const oracleData = ''
 
-      const mapping = CHAINLINK_MAPPING[chainId]
+      const mapping = CHAINLINK_PRICE_FEED_MAP[chainId]
 
       for (const address in mapping) {
         mapping[address].address = address
       }
 
-      let multiply = ethers.constants.AddressZero
-      let divide = ethers.constants.AddressZero
+      let multiply = AddressZero
+      let divide = AddressZero
 
       const multiplyMatches = Object.values(mapping).filter(
         (m) => m.from === asset.wrapped.address && m.to === collateral.wrapped.address
@@ -107,7 +107,14 @@ function Create() {
           }
         }
       }
-      return ethers.utils.defaultAbiCoder.encode(['address', 'address', 'uint256'], [multiply, divide, e10(decimals)])
+
+      console.log({
+        multiply,
+        divide,
+        decimals: e10(decimals),
+      })
+
+      return defaultAbiCoder.encode(['address', 'address', 'uint256'], [multiply, divide, e10(decimals)])
     },
     [chainId]
   )
@@ -123,9 +130,19 @@ function Create() {
         return
       }
 
+      if (!(chainId in CHAINLINK_ORACLE_ADDRESS)) {
+        console.log('No chainlink oracle address')
+        return
+      }
+
+      if (!(chainId in KASHI_ADDRESS)) {
+        console.log('No kashi address')
+        return
+      }
+
       const oracleAddress = CHAINLINK_ORACLE_ADDRESS[chainId]
 
-      const kashiData = ethers.utils.defaultAbiCoder.encode(
+      const kashiData = defaultAbiCoder.encode(
         ['address', 'address', 'address', 'bytes'],
         [
           currencies[Field.COLLATERAL].wrapped.address,
@@ -163,9 +180,9 @@ function Create() {
       <Card
         className="h-full bg-dark-900"
         header={
-          <CardHeader className="bg-dark-800">
+          <Card.Header className="bg-dark-800">
             <div className="text-3xl text-high-emphesis leading-48px">Create a Market</div>
-          </CardHeader>
+          </Card.Header>
         }
       >
         <Container maxWidth="full" className="space-y-6">
@@ -178,9 +195,7 @@ function Create() {
               currency={currencies[Field.COLLATERAL]}
               onCurrencySelect={handleCollateralSelect}
               otherCurrency={currencies[Field.ASSET]}
-              showCommonBases={false}
-              allowManageTokenList={false}
-              showSearch={false}
+              showCommonBases={true}
               id="kashi-currency-collateral"
             />
 
@@ -192,9 +207,7 @@ function Create() {
               currency={currencies[Field.ASSET]}
               onCurrencySelect={handleAssetSelect}
               otherCurrency={currencies[Field.COLLATERAL]}
-              showCommonBases={false}
-              allowManageTokenList={false}
-              showSearch={false}
+              showCommonBases={true}
               id="kashi-currency-asset"
             />
           </div>

@@ -1,6 +1,22 @@
 import { AppDispatch, AppState } from '../index'
-import { ChainId, Currency, CurrencyAmount, JSBI, Percent, TradeType, Trade as V2Trade, WNATIVE } from '@paydefi/sdk'
-import { DEFAULT_ARCHER_ETH_TIP, DEFAULT_ARCHER_GAS_ESTIMATE } from '../../constants'
+import {
+  ChainId,
+  Currency,
+  CurrencyAmount,
+  JSBI,
+  Percent,
+  SUSHI_ADDRESS,
+  TradeType,
+  Trade as V2Trade,
+  WNATIVE_ADDRESS,
+} from '@sushiswap/sdk'
+import { DEFAULT_ARCHER_ETH_TIP, DEFAULT_ARCHER_GAS_ESTIMATE } from '../../config/archer'
+import {
+  EstimatedSwapCall,
+  SuccessfulCall,
+  swapErrorToUserReadableMessage,
+  useSwapCallArguments,
+} from '../../hooks/useSwapCallback'
 // import {
 //   EstimatedSwapCall,
 //   SuccessfulCall,
@@ -11,7 +27,6 @@ import { isAddress, isZero } from '../../functions/validate'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useV2TradeExactIn as useTradeExactIn, useV2TradeExactOut as useTradeExactOut } from '../../hooks/useV2Trades'
 import {
   useExpertModeManager,
   useUserArcherETHTip,
@@ -21,6 +36,7 @@ import {
   useUserSingleHopOnly,
   useUserSlippageTolerance,
 } from '../user/hooks'
+import { useV2TradeExactIn as useTradeExactIn, useV2TradeExactOut as useTradeExactOut } from '../../hooks/useV2Trades'
 
 import { ParsedQs } from 'qs'
 import { SwapState } from './reducer'
@@ -33,12 +49,6 @@ import useENS from '../../hooks/useENS'
 import { useLingui } from '@lingui/react'
 import useParsedQueryString from '../../hooks/useParsedQueryString'
 import useSwapSlippageTolerance from '../../hooks/useSwapSlippageTollerence'
-import {
-  EstimatedSwapCall,
-  SuccessfulCall,
-  swapErrorToUserReadableMessage,
-  useSwapCallArguments,
-} from '../../hooks/useSwapCallback'
 
 export function useSwapState(): AppState['swap'] {
   return useAppSelector((state) => state.swap)
@@ -333,16 +343,15 @@ function validatedRecipient(recipient: any): string | null {
 export function queryParametersToSwapState(parsedQs: ParsedQs, chainId: ChainId = ChainId.MAINNET): SwapState {
   let inputCurrency = parseCurrencyFromURLParameter(parsedQs.inputCurrency)
   let outputCurrency = parseCurrencyFromURLParameter(parsedQs.outputCurrency)
+  const eth = chainId === ChainId.CELO ? WNATIVE_ADDRESS[chainId] : 'ETH'
+  const sushi = SUSHI_ADDRESS[chainId]
   if (inputCurrency === '' && outputCurrency === '') {
-    if (chainId === ChainId.CELO) {
-      inputCurrency = WNATIVE[chainId].address
-    } else {
-      // default to ETH input
-      inputCurrency = 'ETH'
-    }
-  } else if (inputCurrency === outputCurrency) {
-    // clear output if identical
-    outputCurrency = ''
+    inputCurrency = eth
+    outputCurrency = sushi
+  } else if (inputCurrency === '') {
+    inputCurrency = outputCurrency === eth ? sushi : eth
+  } else if (outputCurrency === '' || inputCurrency === outputCurrency) {
+    outputCurrency = inputCurrency === eth ? sushi : eth
   }
 
   const recipient = validatedRecipient(parsedQs.recipient)

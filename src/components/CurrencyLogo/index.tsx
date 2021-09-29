@@ -1,22 +1,9 @@
-import { ChainId, Currency, WNATIVE } from '@paydefi/sdk'
+import { ChainId, Currency, WNATIVE } from '@sushiswap/sdk'
 import React, { FunctionComponent, useMemo } from 'react'
 
 import Logo from '../Logo'
 import { WrappedTokenInfo } from '../../state/lists/wrappedTokenInfo'
-import { getMaticTokenLogoURL } from '../../constants/maticTokenMapping'
 import useHttpLocations from '../../hooks/useHttpLocations'
-
-export const getTokenLogoURL = (address: string, chainId: ChainId) => {
-  let imageURL
-  if (chainId === ChainId.MAINNET) {
-    imageURL = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`
-  } else if (chainId === ChainId.BSC) {
-    imageURL = `https://v1exchange.pancakeswap.finance/images/coins/${address}.png`
-  } else if (chainId === ChainId.MATIC) {
-    imageURL = getMaticTokenLogoURL(address)
-  }
-  return imageURL
-}
 
 const BLOCKCHAIN = {
   [ChainId.MAINNET]: 'ethereum',
@@ -27,37 +14,23 @@ const BLOCKCHAIN = {
   [ChainId.MATIC]: 'polygon',
   [ChainId.XDAI]: 'xdai',
   // [ChainId.OKEX]: 'okex',
-  // [ChainId.MOONRIVER]: 'moonriver'
 }
 
 function getCurrencySymbol(currency) {
-  if (currency.symbol.replace('/e', '') === 'WBTC') {
+  if (currency.symbol === 'WBTC') {
     return 'btc'
   }
-  if (currency.symbol.replace('/e', '') === 'WETH') {
+  if (currency.symbol === 'WETH') {
     return 'eth'
   }
-
-  if (currency.symbol === 'WMOVR') {
-    return 'movr'
-  }
-
-  if (currency.chainId === ChainId.AVALANCHE) {
-    return currency.symbol.replace('/e', '').toLowerCase()
-  }
-
   return currency.symbol.toLowerCase()
 }
 
-function getCurrencyLogoUrls(currency) {
+export function getCurrencyLogoUrls(currency) {
   const urls = []
 
+  urls.push(`https://raw.githubusercontent.com/sushiswap/icons/master/token/${getCurrencySymbol(currency)}.jpg`)
   if (currency.chainId in BLOCKCHAIN) {
-    urls.push(
-      `https://raw.githubusercontent.com/sushiswap/logos/main/network/${BLOCKCHAIN[currency.chainId]}/${
-        currency.address
-      }.jpg`
-    )
     urls.push(
       `https://raw.githubusercontent.com/sushiswap/assets/master/blockchains/${BLOCKCHAIN[currency.chainId]}/assets/${
         currency.address
@@ -87,7 +60,6 @@ const xDaiLogo =
 const CeloLogo = 'https://raw.githubusercontent.com/sushiswap/icons/master/token/celo.jpg'
 const PalmLogo = 'https://raw.githubusercontent.com/sushiswap/icons/master/token/palm.jpg'
 const MovrLogo = 'https://raw.githubusercontent.com/sushiswap/icons/master/token/movr.jpg'
-const FuseLogo = 'https://raw.githubusercontent.com/sushiswap/icons/master/token/fuse.jpg'
 
 const LOGO: { readonly [chainId in ChainId]?: string } = {
   [ChainId.MAINNET]: EthereumLogo,
@@ -113,7 +85,6 @@ const LOGO: { readonly [chainId in ChainId]?: string } = {
   [ChainId.PALM]: PalmLogo,
   [ChainId.PALM_TESTNET]: PalmLogo,
   [ChainId.MOONRIVER]: MovrLogo,
-  [ChainId.FUSE]: FuseLogo,
 }
 
 interface CurrencyLogoProps {
@@ -149,13 +120,13 @@ const CurrencyLogo: FunctionComponent<CurrencyLogoProps> = ({
     if (currency.isToken) {
       const defaultUrls = [...getCurrencyLogoUrls(currency)]
       if (currency instanceof WrappedTokenInfo) {
-        return [...defaultUrls, ...uriLocations, unknown]
+        return [...uriLocations, ...defaultUrls, unknown]
       }
       return defaultUrls
     }
   }, [currency, uriLocations])
 
-  return <Logo srcs={srcs} width={size} height={size} alt={currency?.symbol} {...rest} />
+  return <Logo srcs={srcs} width={size} height={size} alt={currency?.symbol} className={className} {...rest} />
 }
 
 export default CurrencyLogo

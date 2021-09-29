@@ -1,4 +1,4 @@
-import { Currency, Token } from '@paydefi/sdk'
+import { Currency, Token } from '@sushiswap/sdk'
 import { Tags, TokenInfo } from '@uniswap/token-lists'
 
 import { TokenList } from '@uniswap/token-lists/dist/types'
@@ -78,5 +78,9 @@ export class WrappedTokenInfo implements Token {
 
   public get wrapped(): Token {
     return this
+  }
+
+  serialize(): string {
+    return this.address
   }
 }

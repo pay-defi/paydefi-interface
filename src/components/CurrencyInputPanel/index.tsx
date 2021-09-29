@@ -1,4 +1,4 @@
-import { Currency, CurrencyAmount, Pair, Percent, Token } from '@paydefi/sdk'
+import { Currency, CurrencyAmount, Pair, Percent, Token } from '@sushiswap/sdk'
 import React, { ReactNode, useCallback, useState } from 'react'
 import { classNames, formatCurrencyAmount } from '../../functions'
 
@@ -8,8 +8,8 @@ import CurrencyLogo from '../CurrencyLogo'
 import CurrencySearchModal from '../../modals/SearchModal/CurrencySearchModal'
 import DoubleCurrencyLogo from '../DoubleLogo'
 import { FiatValue } from './FiatValue'
+import Input from '../Input'
 import Lottie from 'lottie-react'
-import { Input as NumericalInput } from '../NumericalInput'
 import selectCoinAnimation from '../../animation/select-coin.json'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
@@ -33,11 +33,9 @@ interface CurrencyInputPanelProps {
   priceImpact?: Percent
   id: string
   showCommonBases?: boolean
-  allowManageTokenList?: boolean
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   customBalanceText?: string
-  showSearch?: boolean
 }
 
 export default function CurrencyInputPanel({
@@ -60,8 +58,6 @@ export default function CurrencyInputPanel({
   hideInput = false,
   locked = false,
   customBalanceText,
-  allowManageTokenList = true,
-  showSearch = true,
 }: CurrencyInputPanelProps) {
   const { i18n } = useLingui()
   const [modalOpen, setModalOpen] = useState(false)
@@ -153,7 +149,7 @@ export default function CurrencyInputPanel({
                   {i18n._(t`Max`)}
                 </Button>
               )}
-              <NumericalInput
+              <Input.Numeric
                 id="token-amount-input"
                 value={value}
                 onUserInput={(val) => {
@@ -186,9 +182,6 @@ export default function CurrencyInputPanel({
           selectedCurrency={currency}
           otherSelectedCurrency={otherCurrency}
           showCommonBases={showCommonBases}
-          allowManageTokenList={allowManageTokenList}
-          hideBalance={hideBalance}
-          showSearch={showSearch}
         />
       )}
     </div>

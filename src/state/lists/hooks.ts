@@ -1,7 +1,7 @@
 import { AppState } from '..'
-import DEFAULT_TOKEN_LIST from '@paydefi/default-token-list'
+import DEFAULT_TOKEN_LIST from '@sushiswap/default-token-list'
 import { TokenList } from '@uniswap/token-lists'
-import { UNSUPPORTED_LIST_URLS } from '../../constants/token-lists'
+import { UNSUPPORTED_LIST_URLS } from '../../config/token-lists'
 import UNSUPPORTED_TOKEN_LIST from '../../constants/token-lists/sushiswap-v2-unsupported.tokenlist.json'
 import { WrappedTokenInfo } from './wrappedTokenInfo'
 import { sortByListPriority } from '../../functions/list'
@@ -77,7 +77,6 @@ function combineMaps(map1: TokenAddressMap, map2: TokenAddressMap): TokenAddress
     11297108109: { ...map1[11297108109], ...map2[11297108109] }, // palm
     11297108099: { ...map1[11297108099], ...map2[11297108099] }, // palm testnet
     1285: { ...map1[1285], ...map2[1285] }, // moonriver
-    122: { ...map1[122], ...map2[122] }, // fuse
   }
 }
 

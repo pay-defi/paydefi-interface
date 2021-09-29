@@ -1,8 +1,8 @@
 import { BscConnector } from '@binance-chain/bsc-connector'
-import { ChainId } from '@paydefi/sdk'
-import { FortmaticConnector } from './Fortmatic'
+import { ChainId } from '@sushiswap/sdk'
+import { FortmaticConnector } from '../entities/FortmaticConnector'
 import { InjectedConnector } from '@web3-react/injected-connector'
-import { NetworkConnector } from './NetworkConnector'
+import { NetworkConnector } from '../entities/NetworkConnector'
 import { PortisConnector } from '@web3-react/portis-connector'
 import { TorusConnector } from '@web3-react/torus-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
@@ -17,7 +17,9 @@ const RPC = {
   [ChainId.KOVAN]: 'https://eth-kovan.alchemyapi.io/v2/6OVAa_B_rypWWl9HqtiYK26IRxXiYqER',
   [ChainId.FANTOM]: 'https://rpcapi.fantom.network',
   [ChainId.FANTOM_TESTNET]: 'https://rpc.testnet.fantom.network',
-  [ChainId.MATIC]: 'https://polygon-rpc.com/',
+  [ChainId.MATIC]: 'https://rpc-mainnet.maticvigil.com',
+  // [ChainId.MATIC]:
+  //     'https://apis.ankr.com/e22bfa5f5a124b9aa1f911b742f6adfe/c06bb163c3c2a10a4028959f4d82836d/polygon/full/main',
   [ChainId.MATIC_TESTNET]: 'https://rpc-mumbai.matic.today',
   [ChainId.XDAI]: 'https://rpc.xdaichain.com',
   [ChainId.BSC]: 'https://bsc-dataseed.binance.org/',
@@ -33,8 +35,6 @@ const RPC = {
   [ChainId.OKEX_TESTNET]: 'https://exchaintestrpc.okex.org',
   [ChainId.ARBITRUM]: 'https://arb1.arbitrum.io/rpc',
   [ChainId.PALM]: 'https://palm-mainnet.infura.io/v3/da5fbfafcca14b109e2665290681e267',
-  [ChainId.FUSE]: 'https://rpc.fuse.io',
-  [ChainId.CELO]: 'https://forno.celo.org',
 }
 
 export function getNetwork(defaultChainId, urls = RPC) {
@@ -55,35 +55,36 @@ export function getNetworkLibrary(): Web3Provider {
   return (networkLibrary = networkLibrary ?? new Web3Provider(network.provider as any))
 }
 
+const supportedChainIds = [
+  1, // mainnet
+  3, // ropsten
+  4, // rinkeby
+  5, // goreli
+  42, // kovan
+  250, // fantom
+  4002, // fantom testnet
+  137, // matic
+  80001, // matic testnet
+  100, // xdai
+  56, // binance smart chain
+  97, // binance smart chain testnet
+  1287, // moonbase
+  43114, // avalanche
+  43113, // fuji
+  128, // heco
+  256, // heco testnet
+  1666600000, // harmony
+  1666700000, // harmony testnet
+  66, // okex testnet
+  65, // okex testnet
+  42161, // arbitrum
+  42220, // celo
+  11297108109, // palm
+  1285, // moonriver
+]
+
 export const injected = new InjectedConnector({
-  supportedChainIds: [
-    1, // mainnet
-    3, // ropsten
-    4, // rinkeby
-    5, // goreli
-    42, // kovan
-    250, // fantom
-    4002, // fantom testnet
-    137, // matic
-    80001, // matic testnet
-    100, // xdai
-    56, // binance smart chain
-    97, // binance smart chain testnet
-    1287, // moonbase
-    43114, // avalanche
-    43113, // fuji
-    128, // heco
-    256, // heco testnet
-    1666600000, // harmony
-    1666700000, // harmony testnet
-    66, // okex testnet
-    65, // okex testnet
-    42161, // arbitrum
-    42220, // celo
-    11297108109, // palm
-    1285, // moonriver
-    122, // fuse
-  ],
+  supportedChainIds,
 })
 
 // mainnet only
@@ -91,7 +92,8 @@ export const walletconnect = new WalletConnectConnector({
   rpc: RPC,
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
-  pollingInterval: 15000,
+  supportedChainIds,
+  // pollingInterval: 15000,
 })
 
 // mainnet only

@@ -1,8 +1,9 @@
-import { CHAINLINK_ORACLE_ADDRESS, ChainId, Token } from '@paydefi/sdk'
+import { CHAINLINK_ORACLE_ADDRESS, ChainId, Token } from '@sushiswap/sdk'
 
-import { CHAINLINK_MAPPING } from '../constants/chainlink'
+import { AddressZero } from '@ethersproject/constants'
+import { CHAINLINK_PRICE_FEED_MAP } from '../config/oracles/chainlink'
+import { defaultAbiCoder } from '@ethersproject/abi'
 import { e10 } from '../functions/math'
-import { ethers } from 'ethers'
 
 export interface Oracle {
   address: string
@@ -22,7 +23,7 @@ export abstract class AbstractOracle implements Oracle {
   chainId = ChainId.MAINNET
   pair: any
   tokens: Token[]
-  valid
+  valid = false
 
   constructor(pair: any, chainId, tokens?: Token[]) {
     this.address = pair.oracle
@@ -30,7 +31,6 @@ export abstract class AbstractOracle implements Oracle {
     this.pair = pair
     this.chainId = chainId
     this.tokens = tokens
-    this.valid = false
   }
 }
 
@@ -56,15 +56,15 @@ export class ChainlinkOracle extends AbstractOracle {
   }
 
   private validate() {
-    const mapping = CHAINLINK_MAPPING[this.chainId]
+    const mapping = CHAINLINK_PRICE_FEED_MAP[this.chainId]
     if (!mapping) {
       return false
     }
-    const params = ethers.utils.defaultAbiCoder.decode(['address', 'address', 'uint256'], this.data)
+    const params = defaultAbiCoder.decode(['address', 'address', 'uint256'], this.data)
     let decimals = 54
     let from = ''
     let to = ''
-    if (params[0] !== ethers.constants.AddressZero) {
+    if (params[0] !== AddressZero) {
       if (!mapping![params[0]]) {
         this.error = 'One of the Chainlink oracles used is not configured in this UI.'
         return false
@@ -74,7 +74,7 @@ export class ChainlinkOracle extends AbstractOracle {
         to = mapping![params[0]].to
       }
     }
-    if (params[1] !== ethers.constants.AddressZero) {
+    if (params[1] !== AddressZero) {
       if (!mapping![params[1]]) {
         this.error = 'One of the Chainlink oracles used is not configured in this UI.'
         return false
@@ -92,14 +92,15 @@ export class ChainlinkOracle extends AbstractOracle {
         }
       }
     }
+
     if (
-      from === this.pair.assetAddress &&
-      to === this.pair.collateralAddress &&
-      this.tokens[this.pair.collateralAddress] &&
-      this.tokens[this.pair.assetAddress]
+      from === this.pair.asset.address &&
+      to === this.pair.collateral.address &&
+      this.tokens[this.pair.collateral.address] &&
+      this.tokens[this.pair.asset.address]
     ) {
       const needed =
-        this.tokens[this.pair.collateralAddress].decimals + 18 - this.tokens[this.pair.assetAddress].decimals
+        this.tokens[this.pair.collateral.address].decimals + 18 - this.tokens[this.pair.asset.address].decimals
       const divider = e10(decimals - needed)
       if (!divider.eq(params[2])) {
         this.error =
@@ -119,7 +120,7 @@ function lowerEqual(value1: string, value2: string) {
   return value1.toLowerCase() === value2.toLowerCase()
 }
 
-export function getOracle(pair, chainId, tokens): Oracle {
+export function getOracle(pair, chainId: ChainId, tokens): Oracle {
   if (lowerEqual(pair.oracle, CHAINLINK_ORACLE_ADDRESS[chainId])) {
     return new ChainlinkOracle(pair, chainId, tokens)
   }

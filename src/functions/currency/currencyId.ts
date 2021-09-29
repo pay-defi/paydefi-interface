@@ -1,4 +1,4 @@
-import { ChainId, Currency } from '@paydefi/sdk'
+import { ChainId, Currency } from '@sushiswap/sdk'
 
 export function currencyId(currency: Currency): string {
   if ([ChainId.CELO].includes(currency.chainId)) {

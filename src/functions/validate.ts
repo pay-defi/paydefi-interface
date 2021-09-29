@@ -1,8 +1,8 @@
 // CONVENTION isFoo -> boolean
 
-import { ChainId, Currency, Token } from '@paydefi/sdk'
+import { ChainId, Currency, Token } from '@sushiswap/sdk'
 
-import { BigNumber } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 import { TokenAddressMap } from '../state/lists/hooks'
 import { getAddress } from '@ethersproject/address'
 

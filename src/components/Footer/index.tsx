@@ -1,5 +1,5 @@
 import { ANALYTICS_URL } from '../../constants'
-import { ChainId } from '@paydefi/sdk'
+import { ChainId } from '@sushiswap/sdk'
 import ExternalLink from '../ExternalLink'
 import Polling from '../Polling'
 import { t } from '@lingui/macro'
@@ -63,21 +63,6 @@ const Footer = () => {
           </ExternalLink>
         )}
 
-        {chainId && chainId === ChainId.ARBITRUM && (
-          <ExternalLink id={`arbitrum-bridge-link`} href=" https://bridge.arbitrum.io/" className="text-low-emphesis">
-            {i18n._(t`Arbitrum Bridge`)}
-          </ExternalLink>
-        )}
-
-        {chainId && chainId === ChainId.MOONRIVER && (
-          <ExternalLink
-            id={`moonriver-bridge-link`}
-            href="https://movr.anyswap.exchange/#/bridge "
-            className="text-low-emphesis"
-          >
-            {i18n._(t`Moonriver Bridge`)}
-          </ExternalLink>
-        )}
         <Polling />
       </div>
     </footer>

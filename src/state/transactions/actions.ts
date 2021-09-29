@@ -1,4 +1,4 @@
-import { ChainId } from '@paydefi/sdk'
+import { ChainId } from '@sushiswap/sdk'
 import { createAction } from '@reduxjs/toolkit'
 
 export interface SerializableTransactionReceipt {

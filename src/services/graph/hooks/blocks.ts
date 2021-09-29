@@ -1,18 +1,18 @@
 import { getAverageBlockTime, getBlock, getMassBlocks } from '../fetchers'
-import useSWR, { SWRConfiguration } from 'swr'
 
 import { useActiveWeb3React } from '../../../hooks'
+import useSWR, { SWRConfiguration } from 'swr'
 import { useMemo } from 'react'
 
 interface useBlockProps {
   timestamp?: number
   daysAgo?: number
-  chainId?: number
+  chainId: number
   shouldFetch?: boolean
 }
 
 export function useBlock(
-  { timestamp, daysAgo, chainId = useActiveWeb3React().chainId, shouldFetch = true }: useBlockProps = {},
+  { timestamp, daysAgo, chainId, shouldFetch = true }: useBlockProps,
   swrConfig: SWRConfiguration = undefined
 ) {
   shouldFetch = shouldFetch && !!chainId
@@ -21,11 +21,7 @@ export function useBlock(
       ? Number(timestamp)
       : Math.floor(Number(timestamp) / 1000)
     : undefined
-
-  timestamp = useMemo(
-    () => (daysAgo ? Math.floor(Date.now() / 1000) - daysAgo * 86400 : timestamp),
-    [daysAgo, timestamp]
-  )
+  timestamp = useMemo(() => (daysAgo ? Math.floor(Date.now() / 1000) - daysAgo * 86400 : timestamp), [daysAgo])
 
   const { data } = useSWR(
     shouldFetch ? ['block', chainId, timestamp] : null,

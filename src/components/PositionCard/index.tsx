@@ -1,7 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/outline'
-import { CurrencyAmount, JSBI, Pair, Percent, Token } from '@paydefi/sdk'
+import { CurrencyAmount, JSBI, Pair, Percent, Token } from '@sushiswap/sdk'
 import React, { useState } from 'react'
-import { RowBetween, RowFixed } from '../Row'
 import { currencyId, unwrappedToken } from '../../functions/currency'
 
 import Alert from '../Alert'
@@ -11,8 +10,6 @@ import Button from '../Button'
 import CurrencyLogo from '../CurrencyLogo'
 import Dots from '../Dots'
 import DoubleCurrencyLogo from '../DoubleLogo'
-import { Transition } from '@headlessui/react'
-import { classNames } from '../../functions'
 import { t } from '@lingui/macro'
 import { useActiveWeb3React } from '../../hooks/useActiveWeb3React'
 import { useColor } from '../../hooks'
@@ -20,6 +17,8 @@ import { useLingui } from '@lingui/react'
 import { useRouter } from 'next/router'
 import { useTokenBalance } from '../../state/wallet/hooks'
 import { useTotalSupply } from '../../hooks/useTotalSupply'
+import { classNames } from '../../functions'
+import { Transition } from '@headlessui/react'
 
 interface PositionCardProps {
   pair: Pair
@@ -66,44 +65,44 @@ export function MinimalPositionCard({ pair, showUnwrapped = false, border }: Pos
           <AutoColumn gap={'md'}>
             <div className="text-lg">Your Position</div>
             <div className="flex flex-col md:flex-row md:justify-between">
-              <RowFixed className="flex items-center space-x-4">
+              <div className="flex items-center w-auto space-x-4">
                 <DoubleCurrencyLogo currency0={pair.token0} currency1={pair.token1} size={40} />
                 <div className="text-2xl font-semibold">
                   {currency0.symbol}/{currency1.symbol}
                 </div>
-              </RowFixed>
-              <RowFixed className="flex items-center mt-3 space-x-2 text-base md:mt-0">
+              </div>
+              <div className="flex items-center mt-3 space-x-2 text-base md:mt-0">
                 <div>{userPoolBalance ? userPoolBalance.toSignificant(4) : '-'} </div>
                 <div className="text-secondary">Pool Tokens</div>
-              </RowFixed>
+              </div>
             </div>
             <div className="flex flex-col w-full p-3 mt-3 space-y-1 text-sm rounded bg-dark-900 text-high-emphesis">
-              <RowBetween>
+              <div className="flex justify-between">
                 <div>{i18n._(t`Your pool share`)}</div>
                 <div className="font-bold">{poolTokenPercentage ? poolTokenPercentage.toFixed(6) + '%' : '-'}</div>
-              </RowBetween>
-              <RowBetween>
+              </div>
+              <div className="flex justify-between">
                 <div>{currency0.symbol}:</div>
                 {token0Deposited ? (
-                  <RowFixed className="space-x-2 font-bold">
+                  <div className="flex space-x-2 font-bold">
                     <div> {token0Deposited?.toSignificant(6)}</div>
                     <div className="text-secondary">{currency0.symbol}</div>
-                  </RowFixed>
+                  </div>
                 ) : (
                   '-'
                 )}
-              </RowBetween>
-              <RowBetween>
+              </div>
+              <div className="flex justify-between">
                 <div>{currency1.symbol}:</div>
                 {token1Deposited ? (
-                  <RowFixed className="space-x-2 font-bold">
+                  <div className="flex space-x-2 font-bold">
                     <div>{token1Deposited?.toSignificant(6)}</div>
                     <div className="text-secondary">{currency1.symbol}</div>
-                  </RowFixed>
+                  </div>
                 ) : (
                   '-'
                 )}
-              </RowBetween>
+              </div>
             </div>
           </AutoColumn>
         </div>
@@ -195,12 +194,12 @@ export default function FullPositionCard({ pair, border, stakedBalance }: Positi
               <div>{i18n._(t`Your total pool tokens`)}:</div>
               <div className="font-semibold">{userPoolBalance ? userPoolBalance.toSignificant(4) : '-'}</div>
             </div>
-            {/* {stakedBalance && (
+            {stakedBalance && (
               <div className="flex items-center justify-between">
                 <div>{i18n._(t`Pool tokens in rewards pool`)}:</div>
                 <div className="font-semibold">{stakedBalance.toSignificant(4)}</div>
               </div>
-            )} */}
+            )}
             <div className="flex items-center justify-between">
               <div>{i18n._(t`Pooled ${currency0?.symbol}`)}:</div>
               {token0Deposited ? (
@@ -239,7 +238,7 @@ export default function FullPositionCard({ pair, border, stakedBalance }: Positi
               <Button
                 color="blue"
                 onClick={() => {
-                  router.push(`/add/${pair.liquidityToken.address}`)
+                  router.push(`/add/${currencyId(currency0)}/${currencyId(currency1)}`)
                 }}
               >
                 {i18n._(t`Add`)}

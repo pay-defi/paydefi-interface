@@ -1,6 +1,7 @@
-import { ChainId } from '@paydefi/sdk'
+import { ChainId } from '@sushiswap/sdk'
 const THE_GRAPH = 'https://api.thegraph.com'
-
+const NAS_GRAPH = 'https://graph.kkt.one/node'
+const HYPER_GRAPH = 'https://q.hg.network'
 export const GRAPH_HOST = {
   [ChainId.MAINNET]: THE_GRAPH,
   [ChainId.XDAI]: THE_GRAPH,
@@ -9,7 +10,8 @@ export const GRAPH_HOST = {
   [ChainId.BSC]: THE_GRAPH,
   [ChainId.AVALANCHE]: THE_GRAPH,
   [ChainId.CELO]: THE_GRAPH,
-  [ChainId.HARMONY]: 'https://sushi.graph.t.hmny.io',
-  [ChainId.OKEX]: 'https://graph.kkt.one/node',
   [ChainId.ARBITRUM]: THE_GRAPH,
+  [ChainId.HARMONY]: 'https://sushi.graph.t.hmny.io',
+  [ChainId.OKEX]: HYPER_GRAPH,
+  [ChainId.HECO]: HYPER_GRAPH,
 }

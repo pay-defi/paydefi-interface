@@ -1,4 +1,4 @@
-import { JSBI, Percent } from '@paydefi/sdk'
+import { JSBI, Percent } from '@sushiswap/sdk'
 
 import { basisPointsToPercent } from './basisPointsToPercent'
 
