@@ -2557,10 +2557,10 @@
   resolved "https://registry.yarnpkg.com/@paydefi/default-token-list/-/default-token-list-1.0.2.tgz#10a58f9d46b2d5b64b43b7a4a19e517b5b645eb1"
   integrity sha512-fLakWUQL1ACQPMBgYNtaXmzZvkpqEz6oLMyxunS4SjAJ9X9m08t7bdhfGEJf6eMb4rNJ1WbK3DhTOrN84zF/Lw==
 
-"@paydefi/sdk@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@paydefi/sdk/-/sdk-1.0.2.tgz#00f72ae60ba0d6475516a44966dddb0685520ba6"
-  integrity sha512-yXzmjyxy/AZ+D/Fq6pnkdmSubycnZ1UP2sLr85Q4w2gN/ou8hS1SBUxfzU7NOnqFfoGJaSKlFsbTGnMCX7O4BQ==
+"@paydefi/sdk@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@paydefi/sdk/-/sdk-1.0.4.tgz#89c036cf8e5b3125a33d33cada6512355f4ce739"
+  integrity sha512-2W252cv122ASa9bm1/V44vkT5z5248d67VM47Ukx6fy6nyRXWUbu4mEvgAwmXdQKYrpC8iN7LBuprw+MbiMvmg==
   dependencies:
     big.js "^6.1.0"
     decimal.js-light "^2.5.0"
