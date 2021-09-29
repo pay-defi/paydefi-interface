@@ -1,6 +1,6 @@
 import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 
-import { ChainId } from '@sushiswap/sdk'
+import { ChainId } from '@paydefi/sdk'
 
 const NETWORK_POLLING_INTERVALS: { [chainId: number]: number } = {
   [ChainId.ARBITRUM]: 1_000,

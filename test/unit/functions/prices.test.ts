@@ -7,7 +7,7 @@ import {
     TokenAmount,
     Trade,
     TradeType,
-} from '@sushiswap/sdk'
+} from '@paydefi/sdk'
 
 import { computeTradePriceBreakdown } from '../../../src/functions/prices'
 

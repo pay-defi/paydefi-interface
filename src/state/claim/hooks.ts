@@ -1,4 +1,4 @@
-import { ChainId, Currency, CurrencyAmount, JSBI, Token } from '@sushiswap/sdk'
+import { ChainId, Currency, CurrencyAmount, JSBI, Token } from '@paydefi/sdk'
 import { getAddress, isAddress } from '@ethersproject/address'
 import { useEffect, useState } from 'react'
 

@@ -1,4 +1,4 @@
-import { ChainId, CurrencyAmount, Ether } from '@sushiswap/sdk'
+import { ChainId, CurrencyAmount, Ether } from '@paydefi/sdk'
 import {
   useUserArcherETHTip,
   useUserArcherGasPrice,
